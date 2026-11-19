@@ -1,0 +1,4 @@
+* text=auto eol=lf
+*.patch whitespace=-blank-at-eol
+*.mp4 binary
+*.xz binary

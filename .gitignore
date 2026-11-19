@@ -1,0 +1,8 @@
+/__pycache__/
+/outputs/
+/native/build/
+/native/*.exe
+/native/*.log
+*.mp4
+!/examples/10s.mp4
+!/examples/20s.mp4

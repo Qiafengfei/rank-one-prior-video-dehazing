@@ -1,0 +1,50 @@
+--- a/libavcodec/h264_mb.c
++++ b/libavcodec/h264_mb.c
+@@ -32,6 +32,8 @@
+ #include "libavutil/intreadwrite.h"
+ #include "avcodec.h"
+ #include "h264dec.h"
++extern void ff_stage3_mb_begin(const H264Context *, H264SliceContext *);
++extern void ff_stage3_mb_end(void);
+ #include "h264_ps.h"
+ #include "qpeldsp.h"
+ #include "rectangle.h"
+--- a/libavcodec/h264_picture.c
++++ b/libavcodec/h264_picture.c
+@@ -186,6 +186,8 @@
+ #endif /* CONFIG_ERROR_RESILIENCE */
+ }
+ 
++extern void ff_stage3_picture(H264Context *h);
++
+ int ff_h264_field_end(H264Context *h, H264SliceContext *sl, int in_setup)
+ {
+     AVCodecContext *const avctx = h->avctx;
+@@ -223,6 +225,9 @@
+         }
+     }
+ 
++    if (!in_setup && cur && !avctx->hwaccel)
++        ff_stage3_picture(h);
++
+     if (!in_setup && !h->droppable)
+         ff_thread_report_progress(&cur->tf, INT_MAX,
+                                   h->picture_structure == PICT_BOTTOM_FIELD);
+--- a/libavcodec/h264_mb_template.c
++++ b/libavcodec/h264_mb_template.c
+@@ -95,6 +95,7 @@
+         // dct_offset = s->linesize * 16;
+     }
+ 
++    ff_stage3_mb_begin(h, sl);
+     if (!SIMPLE && IS_INTRA_PCM(mb_type)) {
+         const int bit_depth = h->ps.sps->bit_depth_luma;
+         if (PIXEL_SHIFT) {
+@@ -245,6 +246,7 @@
+             }
+         }
+     }
++    ff_stage3_mb_end();
+ }
+ 
+ #if !SIMPLE || BITS == 8

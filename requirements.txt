@@ -1,0 +1,6 @@
+numpy==2.4.4
+opencv-python-headless==4.13.0.92
+numba==0.68.1
+av==19.0.2
+threadpoolctl==3.5.0
+Pillow==12.1.1
